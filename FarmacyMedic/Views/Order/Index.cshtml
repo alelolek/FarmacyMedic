@@ -1,0 +1,47 @@
+﻿@using FarmacyMedic.Models.DTO;
+@model IEnumerable<FarmacyMedic.Models.DTO.OrderDto>
+
+
+<h1>Orders</h1>
+<p>
+	<a asp-action="Create" class="btn ">Create</a>
+</p>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>
+				@Html.DisplayNameFor(model => model.DateCreation)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.ClientId)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Client.Name)
+			</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var product in Model)
+		{
+			<tr>
+				<th>
+					@Html.DisplayFor(m=>product.DateCreation)
+				</th>
+				<th>
+					@Html.DisplayFor(m=>product.ClientId)
+				</th>
+				<th>
+					@Html.DisplayFor(m=>product.Client.Name)
+				</th>
+			
+				<td>
+					<a asp-action="Edit" class="btn btn-warning" asp-route-id="@product.Id">Edit</a> |
+					<a asp-action="Details" class="btn btn-primary" asp-route-id="@product.Id">Details</a> |
+					<a asp-action="Delete" class="btn btn-danger" asp-route-id="@product.Id">Delete</a>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>

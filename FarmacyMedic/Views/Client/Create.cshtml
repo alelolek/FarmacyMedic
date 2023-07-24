@@ -1,0 +1,36 @@
+﻿@model FarmacyMedic.Models.DTO.ClientCreationDto
+
+<h1>Create Product</h1>
+
+@using (Html.BeginForm("Create", "Client"))
+{
+    <div class="form-group">
+        @Html.LabelFor(model => model.Code)
+        @Html.TextBoxFor(model => model.Code, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Name)
+        @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Email)
+        @Html.TextBoxFor(model => model.Email, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Phone)
+        @Html.TextBoxFor(model => model.Phone, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Address)
+        @Html.TextBoxFor(model => model.Address, new { @class = "form-control" })
+    </div>
+
+    <button type="submit" value="Create" class="btn btn-primary">Create </button>
+}
+
+@if (ViewBag.ProductCreated != null)
+{
+    <div class="alert alert-success">
+        Product created successfully!
+    </div>
+}

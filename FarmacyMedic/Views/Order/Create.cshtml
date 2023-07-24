@@ -1,0 +1,19 @@
+﻿@model FarmacyMedic.Models.DTO.OrderCreationDto
+
+<h1>Create New Order</h1>
+
+<h2>Nueva Orden</h2>
+<form method="post" asp-action="Create">
+    <div class="form-group">
+        <label for="DateCreation">Fecha de Creación:</label>
+        <input type="date" class="form-control" id="DateCreation" name="DateCreation" asp-for="DateCreation" required>
+    </div>
+    <div class="form-group">
+        <label for="ClientId">ID del Cliente:</label>
+        <input type="number" class="form-control" id="ClientId" name="ClientId" asp-for="ClientId" required>
+    </div>
+    <button type="submit" value="Create" class="btn btn-primary">Crear Orden</button>
+</form>
+<p>
+    @Html.ActionLink("Back to List", "Index")
+</p>
