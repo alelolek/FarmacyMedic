@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FarmacyMedic.Controllers
 {
+ 
     public class OrderController : Controller
     {
         private readonly FarmacyDbContext context;
@@ -22,7 +23,7 @@ namespace FarmacyMedic.Controllers
         {
             try
             {
-                var orders = await context.Orders.ToListAsync();
+                var orders = await context.Orders.Include(o=>o.Client).ToListAsync();
                 var orderDto = mapper.Map<List<OrderDto>>(orders);
                 return View(orderDto);
             }
@@ -39,36 +40,47 @@ namespace FarmacyMedic.Controllers
             {
                 return NotFound();
             }
-            var orders = await context.Clients.FirstOrDefaultAsync(m => m.Id == id);
+        
+            var orders = await context.Orders.Include(or=>or.OrderProduct)
+                .ThenInclude(orderProduct=> orderProduct.Product)
+                .FirstOrDefaultAsync(x=>x.Id == id);
+
             var orderDto = mapper.Map<OrderDto>(orders);
             if (orderDto == null)
             {
                 return NotFound();
             }
+            
             return View(orderDto);
         }
 
+
+
         public async Task<IActionResult> Create()
         {
+            var clients = await context.Clients.ToListAsync(); 
+            var products = await context.Products.ToListAsync(); 
+
+            ViewBag.Clients = clients;
+            ViewBag.Products = products;
+
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(OrderCreationDto orderCreationDto)
         {
-            if (ModelState.IsValid)
-            {
-                var order = mapper.Map<Order>(orderCreationDto);
-                if (order == null)
-                {
-                    return NotFound();
-                }
-                
-                context.Add(order);
-                await context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(orderCreationDto);
+            var productsSelected = orderCreationDto.Products.Select(a=>a.ProductId).ToList();
+            var productNoExist = await context.Products.AnyAsync(a=>!productsSelected.Contains(a.Id));
+
+            if(productNoExist)
+                return BadRequest("No existe uno de los productos enviados");
+            
+            var orden = mapper.Map<Order>(orderCreationDto);
+            context.Add(orden);
+            await context.SaveChangesAsync();
+            //return View(orderCreationDto);
+            return RedirectToAction("Index", "Orders");
         }
 
         public async Task<IActionResult> Edit(int? id)

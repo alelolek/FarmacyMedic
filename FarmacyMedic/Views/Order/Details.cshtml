@@ -1,5 +1,61 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model FarmacyMedic.Models.DTO.OrderDto
+
 @{
+    ViewData["Title"] = "Order Details";
 }
+
+<h1>Order Details</h1>
+
+@if (Model == null)
+{
+    <p>Order not found.</p>
+}
+else
+{
+    <div>
+      
+        <h2>Order ID: @Model.Id</h2>
+        <p>Order Date: @Model.DateCreation.ToShortDateString()</p>
+        <p>Customer Name: @Model.ClientId</p>
+
+        <h3>Ordered Products:</h3>
+        <ul>
+            @foreach (var orderProduct in Model.Products)
+            {
+                <li>@orderProduct.Name - Price: @orderProduct.Price</li>
+            }
+        </ul>
+        @{
+            decimal totalPrice = Model.Products.Sum(op => op.Price);
+        }
+        <p>Total Price: @totalPrice.ToString("C")</p>
+    </div>
+}
+
+<p>
+    <a asp-action="Index">Back to Orders List</a>
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

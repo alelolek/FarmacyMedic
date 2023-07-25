@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FarmacyMedic
 {
@@ -28,7 +29,9 @@ namespace FarmacyMedic
 			services.AddAutoMapper(
 							typeof(ProductMapperProfile),
                             typeof(ClientMapperProfile),
-							typeof(OrderMapperProfile)
+							typeof(OrderMapperProfile),
+                             typeof(OrderProductMapperProfile),
+							 typeof(InvoiceMapperProfile)
                             );
 		}
 

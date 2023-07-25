@@ -8,5 +8,6 @@ namespace FarmacyMedic.Models.DAO.Entities
         public DateTime DateCreation { get; set; }
         public int ClientId { get; set; }
         public Client Client { get; set; }
+        public List<OrderProduct> OrderProduct { get; set; }
     }
 }

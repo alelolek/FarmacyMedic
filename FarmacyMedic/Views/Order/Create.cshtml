@@ -1,5 +1,145 @@
 ﻿@model FarmacyMedic.Models.DTO.OrderCreationDto
 
+
+@{
+    ViewData["Title"] = "Create Order";
+}
+
+<h1>Create Order</h1>
+
+@using (Html.BeginForm())
+{
+    <div>
+        <label for="ClientId">Select Client:</label>
+        <select id="ClientId" name="ClientId">
+            <option value="">-- Select Client --</option>
+            @foreach (var client in ViewBag.Clients)
+            {
+                <option value="@client.Id">@client.Name</option>
+            }
+        </select>
+    </div>
+
+    <div>
+        <label for="DateCreation">Select Date:</label>
+        <input type="date" id="DateCreation" name="DateCreation" />
+    </div>
+
+    <div>
+        <label>Select Products:</label>
+        <br />
+        @for (var i = 0; i < ViewBag.Products.Count; i++)
+        {
+            var productId = ViewBag.Products[i].Id;
+            var product = ViewBag.Products[i];
+            var quantityName = $"Products[{i}].Quantity"; // Nombre de la propiedad en el modelo
+
+            <input type="hidden" name="Products[@i].ProductId" value="@productId" />
+            <input type="hidden" name="Products[@i].OrderId" value="0" /> <!-- Asigna el OrderId adecuado aquí -->
+            <input type="checkbox" id="@("product_" + productId)" name="Products[@i].Selected" value="true" />
+            <label for="@("product_" + productId)">@product.Name - Price: @product.Price</label>
+            <br />
+            <label for="@("quantity_" + productId)">Quantity:</label>
+            <input type="number" id="@("quantity_" + productId)" name="@quantityName" min="1" max="100" />
+            <br />
+        }
+    </div>
+
+    <button type="submit">Create Order</button>
+}
+
+<p>
+    <a asp-action="Index">Back to Orders List</a>
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*@model FarmacyMedic.Models.DTO.OrderCreationDto
+
+<h2>Create Order</h2>
+
+@using (Html.BeginForm("Create", "Order", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.ProductsId, htmlAttributes: new { @class = "control-label" })
+        @Html.TextBoxFor(model => model.ProductsId, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.ProductsId, "", new { @class = "text-danger" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.ClientId, htmlAttributes: new { @class = "control-label" })
+        @Html.TextBoxFor(model => model.ClientId, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.ClientId, "", new { @class = "text-danger" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.DateCreation, htmlAttributes: new { @class = "control-label" })
+        @Html.TextBoxFor(model => model.DateCreation, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.DateCreation, "", new { @class = "text-danger" })
+    </div>
+
+    
+
+    <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-primary" />
+    </div>
+}
+
+@if (Model != null)
+{
+    <h4>Created Order:</h4>
+    <div>
+        <h5>Order ID: @Model.ProductsId</h5>
+       
+    </div>
+}
+
+
+
+
+
+
+*@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*@model FarmacyMedic.Models.DTO.OrderCreationDto
+
 <h1>Create New Order</h1>
 
 <h2>Nueva Orden</h2>
@@ -17,3 +157,4 @@
 <p>
     @Html.ActionLink("Back to List", "Index")
 </p>
+*@

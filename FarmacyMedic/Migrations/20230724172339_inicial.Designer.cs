@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FarmacyMedic.Migrations
 {
     [DbContext(typeof(FarmacyDbContext))]
-    [Migration("20230721002738_enum")]
-    partial class @enum
+    [Migration("20230724172339_inicial")]
+    partial class inicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -103,24 +103,19 @@ namespace FarmacyMedic.Migrations
 
             modelBuilder.Entity("FarmacyMedic.Models.DAO.Entities.OrderProduct", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
+                    b.HasKey("OrderId", "ProductId");
 
                     b.HasIndex("ProductId");
 
@@ -177,13 +172,13 @@ namespace FarmacyMedic.Migrations
             modelBuilder.Entity("FarmacyMedic.Models.DAO.Entities.OrderProduct", b =>
                 {
                     b.HasOne("FarmacyMedic.Models.DAO.Entities.Order", "Order")
-                        .WithMany()
+                        .WithMany("OrderProduct")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("FarmacyMedic.Models.DAO.Entities.Product", "Product")
-                        .WithMany()
+                        .WithMany("OrderProduct")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -191,6 +186,16 @@ namespace FarmacyMedic.Migrations
                     b.Navigation("Order");
 
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("FarmacyMedic.Models.DAO.Entities.Order", b =>
+                {
+                    b.Navigation("OrderProduct");
+                });
+
+            modelBuilder.Entity("FarmacyMedic.Models.DAO.Entities.Product", b =>
+                {
+                    b.Navigation("OrderProduct");
                 });
 #pragma warning restore 612, 618
         }
