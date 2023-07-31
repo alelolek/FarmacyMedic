@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FarmacyMedic.Migrations
 {
     [DbContext(typeof(FarmacyDbContext))]
-    [Migration("20230724172339_inicial")]
-    partial class inicial
+    [Migration("20230725231211_Inicial")]
+    partial class Inicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -101,27 +101,6 @@ namespace FarmacyMedic.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("FarmacyMedic.Models.DAO.Entities.OrderProduct", b =>
-                {
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.HasKey("OrderId", "ProductId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("OrderProducts");
-                });
-
             modelBuilder.Entity("FarmacyMedic.Models.DAO.Entities.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -147,6 +126,32 @@ namespace FarmacyMedic.Migrations
                     b.ToTable("Products");
                 });
 
+            modelBuilder.Entity("FarmacyMedic.Models.DAO.Entities.ProductDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductDetails");
+                });
+
             modelBuilder.Entity("FarmacyMedic.Models.DAO.Entities.Invoice", b =>
                 {
                     b.HasOne("FarmacyMedic.Models.DAO.Entities.Order", "Order")
@@ -169,33 +174,24 @@ namespace FarmacyMedic.Migrations
                     b.Navigation("Client");
                 });
 
-            modelBuilder.Entity("FarmacyMedic.Models.DAO.Entities.OrderProduct", b =>
+            modelBuilder.Entity("FarmacyMedic.Models.DAO.Entities.ProductDetail", b =>
                 {
-                    b.HasOne("FarmacyMedic.Models.DAO.Entities.Order", "Order")
-                        .WithMany("OrderProduct")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("FarmacyMedic.Models.DAO.Entities.Order", null)
+                        .WithMany("ProductDetail")
+                        .HasForeignKey("OrderId");
 
                     b.HasOne("FarmacyMedic.Models.DAO.Entities.Product", "Product")
-                        .WithMany("OrderProduct")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Order");
 
                     b.Navigation("Product");
                 });
 
             modelBuilder.Entity("FarmacyMedic.Models.DAO.Entities.Order", b =>
                 {
-                    b.Navigation("OrderProduct");
-                });
-
-            modelBuilder.Entity("FarmacyMedic.Models.DAO.Entities.Product", b =>
-                {
-                    b.Navigation("OrderProduct");
+                    b.Navigation("ProductDetail");
                 });
 #pragma warning restore 612, 618
         }

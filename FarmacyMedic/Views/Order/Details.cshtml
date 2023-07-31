@@ -1,4 +1,4 @@
-﻿@model FarmacyMedic.Models.DTO.OrderDto
+﻿@*@model FarmacyMedic.Models.DTO.OrderDto
 
 @{
     ViewData["Title"] = "Order Details";
@@ -20,15 +20,12 @@ else
 
         <h3>Ordered Products:</h3>
         <ul>
-            @foreach (var orderProduct in Model.Products)
+            @foreach (var orderProduct in Model.ProductDetail)
             {
-                <li>@orderProduct.Name - Price: @orderProduct.Price</li>
+                <li>@orderProduct.Product.Name - Quantity: @orderProduct.Quantity</li>
             }
         </ul>
-        @{
-            decimal totalPrice = Model.Products.Sum(op => op.Price);
-        }
-        <p>Total Price: @totalPrice.ToString("C")</p>
+  
     </div>
 }
 
@@ -43,19 +40,4 @@ else
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+*@

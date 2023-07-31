@@ -30,7 +30,6 @@ namespace FarmacyMedic
 							typeof(ProductMapperProfile),
                             typeof(ClientMapperProfile),
 							typeof(OrderMapperProfile),
-                             typeof(OrderProductMapperProfile),
 							 typeof(InvoiceMapperProfile)
                             );
 		}

@@ -52,47 +52,35 @@ namespace FarmacyMedic.Controllers
 
         public async Task<IActionResult> Create()
         {
-            var orders = await _context.Orders
-                .Include(o => o.OrderProduct)
-                .ThenInclude(op => op.Product)
-                .Include(o => o.Client)
-                .ToListAsync();
+            //var orders = await _context.Orders
+            //    .Include(o => o.OrderProduct)
+            //    .ThenInclude(op => op.Product)
+            //    .Include(o => o.Client)
+            //    .ToListAsync();
 
-            ViewBag.Orders = new SelectList(orders, "Id", "Id");
+            //ViewBag.Orders = new SelectList(orders, "Id", "Id");
 
-            var currentOrder = orders.FirstOrDefault();
+            //var currentOrder = orders.FirstOrDefault();
 
-            decimal totalAmount = currentOrder?.OrderProduct.Sum(op => op.Product.Price ) ?? 0;
-            //decimal totalAmount = currentOrder?.OrderProduct.Sum(op => op.Product.Price * op.Quantity) ?? 0;
+            //decimal totalAmount = currentOrder?.OrderProduct.Sum(op => op.Product.Price ) ?? 0;
+            ////decimal totalAmount = currentOrder?.OrderProduct.Sum(op => op.Product.Price * op.Quantity) ?? 0;
 
 
-            var invoiceCreacionDto = new InvoiceCreacionDto
-            {
-                OrderId = currentOrder?.Id ?? 0,
-                Date = DateTime.Now,
-                TotalAmount = totalAmount,
-                State = InvoiceState.Done
-            };
+            //var invoiceCreacionDto = new InvoiceCreacionDto
+            //{
+            //    OrderId = currentOrder?.Id ?? 0,
+            //    Date = DateTime.Now,
+            //    TotalAmount = totalAmount,
+            //    State = InvoiceState.Done
+            //};
 
-            return View(invoiceCreacionDto);
+            return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(InvoiceCreacionDto invoiceCreacionDto)
         {
-			if (ModelState.IsValid)
-			{
-				var invoice = mapper.Map<Invoice>(invoiceCreacionDto);
-                _context.Add(invoice);
-                await _context.SaveChangesAsync();
-            }
-
-			var orders = await _context.Orders
-				.Include(o => o.OrderProduct) 
-				.ThenInclude(op => op.Product) 
-                .ToListAsync();
-
-			ViewBag.Orders = new SelectList(orders, "Id", "DateCreation");
+			
 			return View(invoiceCreacionDto);
 		}
 

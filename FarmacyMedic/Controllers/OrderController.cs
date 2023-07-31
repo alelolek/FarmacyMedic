@@ -40,9 +40,9 @@ namespace FarmacyMedic.Controllers
             {
                 return NotFound();
             }
-        
-            var orders = await context.Orders.Include(or=>or.OrderProduct)
-                .ThenInclude(orderProduct=> orderProduct.Product)
+
+            var orders = await context.Orders.Include(or=>or.ProductDetail)
+                .ThenInclude(o=>o.Product)
                 .FirstOrDefaultAsync(x=>x.Id == id);
 
             var orderDto = mapper.Map<OrderDto>(orders);
@@ -50,38 +50,57 @@ namespace FarmacyMedic.Controllers
             {
                 return NotFound();
             }
-            
+
             return View(orderDto);
         }
 
+        [HttpGet]
+        public IActionResult BuscarProducto(string productName)
+        {
+            if (string.IsNullOrEmpty(productName))
+            {
+                return Json(new List<Product>());
+            }
 
+            var productosEncontrados = context.Products
+                .Where(p => p.Name.Contains(productName))
+                .ToList();
+
+            return Json(productosEncontrados);
+        }
 
         public async Task<IActionResult> Create()
         {
-            var clients = await context.Clients.ToListAsync(); 
-            var products = await context.Products.ToListAsync(); 
-
-            ViewBag.Clients = clients;
-            ViewBag.Products = products;
-
+            var clients = await context.Clients.ToListAsync();
+            var clientsSelectList = clients.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name }).ToList();
+            ViewBag.Clients = clientsSelectList;
             return View();
         }
+
 
         [HttpPost]
         public async Task<IActionResult> Create(OrderCreationDto orderCreationDto)
         {
-            var productsSelected = orderCreationDto.Products.Select(a=>a.ProductId).ToList();
-            var productNoExist = await context.Products.AnyAsync(a=>!productsSelected.Contains(a.Id));
 
-            if(productNoExist)
-                return BadRequest("No existe uno de los productos enviados");
-            
             var orden = mapper.Map<Order>(orderCreationDto);
             context.Add(orden);
             await context.SaveChangesAsync();
-            //return View(orderCreationDto);
-            return RedirectToAction("Index", "Orders");
+
+            return View("Products");
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Products(int idOrder,ProductDetailCreationDto productDetailCreationDto)
+        {
+            var product = mapper.Map<ProductDetail>(productDetailCreationDto);
+
+            context.Add(product);
+            await context.SaveChangesAsync();
+
+            return View();
+        }
+
+        //public async Task<IActionResult> EliminarProducto(int idOrder, )
 
         public async Task<IActionResult> Edit(int? id)
         {

@@ -1,6 +1,6 @@
 ﻿namespace FarmacyMedic.Models.DAO.Entities
 {
-    public class OrderProduct
+    public class ProductDetail
     {
         public int Id { get; set; }
         public int ProductId { get; set; }
