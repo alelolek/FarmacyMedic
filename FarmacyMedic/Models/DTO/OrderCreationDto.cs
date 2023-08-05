@@ -6,5 +6,6 @@ namespace FarmacyMedic.Models.DTO
     {
         public DateTime DateCreation { get; set; }
         public int ClientId { get; set; }
+        public List<ProductDetailCreationDto> Products { get; set; }
     }
 }

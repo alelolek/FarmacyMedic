@@ -41,14 +41,20 @@ namespace FarmacyMedic.Controllers
                 return NotFound();
             }
 
-            var orders = await context.Orders.Include(or=>or.ProductDetail)
-                .ThenInclude(o=>o.Product)
-                .FirstOrDefaultAsync(x=>x.Id == id);
+            var orders = await context.Orders.Include(or => or.ProductDetail)
+                .ThenInclude(o => o.Product)
+                .Include(or => or.Client)
+                .FirstOrDefaultAsync(x => x.Id == id);
 
             var orderDto = mapper.Map<OrderDto>(orders);
             if (orderDto == null)
             {
                 return NotFound();
+            }
+
+            foreach (var productDetailDto in orderDto.ProductDetail)
+            {
+                productDetailDto.Product = mapper.Map<ProductDto>(context.Products.FirstOrDefault(p => p.Id == productDetailDto.ProductId));
             }
 
             return View(orderDto);
@@ -71,36 +77,38 @@ namespace FarmacyMedic.Controllers
 
         public async Task<IActionResult> Create()
         {
-            var clients = await context.Clients.ToListAsync();
-            var clientsSelectList = clients.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name }).ToList();
-            ViewBag.Clients = clientsSelectList;
-            return View();
-        }
+			var clients = await context.Clients.ToListAsync();
+			var clientsSelectList = clients.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name }).ToList();
+			ViewBag.Clients = clientsSelectList;
 
+			var products = await context.Products.ToListAsync();
+			var productsSelectList = products.Select(p => new SelectListItem { Value = p.Id.ToString(), Text = p.Name }).ToList();
+			ViewBag.Products = productsSelectList;
+
+			return View();
+		}
 
         [HttpPost]
         public async Task<IActionResult> Create(OrderCreationDto orderCreationDto)
         {
-
             var orden = mapper.Map<Order>(orderCreationDto);
             context.Add(orden);
             await context.SaveChangesAsync();
 
-            return View("Products");
-        }
+            // Ahora, guardamos los detalles de los productos asociados a la orden
+            foreach (var productDetailDto in orderCreationDto.Products)
+            {
+                var productDetail = mapper.Map<ProductDetail>(productDetailDto);
+                productDetail.OrderId = orden.Id; // Asignamos el Id de la orden a los detalles del producto
+                context.Add(productDetail);
+            }
 
-        [HttpPost]
-        public async Task<IActionResult> Products(int idOrder,ProductDetailCreationDto productDetailCreationDto)
-        {
-            var product = mapper.Map<ProductDetail>(productDetailCreationDto);
-
-            context.Add(product);
             await context.SaveChangesAsync();
 
-            return View();
+            return RedirectToAction("Index"); // Cambia "Index" por el nombre de la acción que redirigirá después de guardar los datos
         }
 
-        //public async Task<IActionResult> EliminarProducto(int idOrder, )
+       
 
         public async Task<IActionResult> Edit(int? id)
         {

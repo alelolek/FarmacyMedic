@@ -1,5 +1,59 @@
 ﻿@model FarmacyMedic.Models.DTO.OrderCreationDto
 
+<h2>Create Order</h2>
+
+@using (Html.BeginForm("Create", "Order", FormMethod.Post))
+{
+    <div>
+        @Html.LabelFor(model => model.DateCreation)
+        @Html.EditorFor(model => model.DateCreation)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.ClientId)
+        @Html.DropDownListFor(model => model.ClientId, (List<SelectListItem>)ViewBag.Clients, "Select Client")
+    </div>
+
+    <div>
+        <h3>Products</h3>
+        @for (int i = 0; i < ViewBag.Products.Count; i++)
+        {
+            <div>
+                @Html.LabelFor(model => model.Products[i].ProductId)
+                @Html.DropDownListFor(model => model.Products[i].ProductId, (List<SelectListItem>)ViewBag.Products, "Select Product")
+
+                @Html.LabelFor(model => model.Products[i].Quantity)
+                @Html.EditorFor(model => model.Products[i].Quantity)
+            </div>
+        }
+    </div>
+
+    <input type="submit" value="Create Order" />
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*@model FarmacyMedic.Models.DTO.OrderCreationDto
+
 <h2>Crear Nueva Orden</h2>
 
 <form id="orderForm" method="post" action="@Url.Action("Create", "Order")">
@@ -11,101 +65,33 @@
         <label for="ClientId">Cliente:</label>
         @Html.DropDownListFor(m => m.ClientId, (IEnumerable<SelectListItem>)ViewBag.Clients, new { @class = "form-control" })
     </div>
-
-    @*<div class="form-group">
-        <label for="ProductName">Buscar Producto:</label>
-        <input type="text" id="productName" class="form-control" onkeyup="buscarProducto()" />
-    </div>
-
-    <div class="row">
-        <div class="col-md-6">
-            <h3>Productos Disponibles</h3>
-            <ul id="availableProducts" class="list-group">
-            </ul>
-        </div>
-        <div class="col-md-6">
-            <h3>Productos Seleccionados</h3>
-            <ul id="selectedProducts" class="list-group">
-            </ul>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-6">
-            <h3>Cantidades</h3>
-            <ul id="productQuantities" class="list-group">
-            </ul>
-        </div>
-    </div>*@
-@*
-    <input type="hidden" id="productDetail" name="ProductDetail" value="" />*@
-
-
-    <button type="submit" id="crearOrdenButton" class="btn btn-primary mt-3" >Add Products</button>
-
+    <button type="submit" id="crearOrdenButton" class="btn btn-primary mt-3">Create Order</button>
+   
 </form>
 
 
+<partial name="Products"  />
+
+
+<button type="submit" id="crearOrdenButton" class="btn btn-primary mt-3">Create Order</button>
 
 
 
 
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRPifzW3RAwTbkkW8nx9vOtl1TkpTd7Fzj2HXM1Bt" crossorigin="anonymous"></script>
 
-@*@model FarmacyMedic.Models.DTO.OrderCreationDto
-
-<h2>Create Order</h2>
-
-@using (Html.BeginForm("Create", "Order", FormMethod.Post))
-{
-    @Html.AntiForgeryToken()
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.ProductsId, htmlAttributes: new { @class = "control-label" })
-        @Html.TextBoxFor(model => model.ProductsId, new { @class = "form-control" })
-        @Html.ValidationMessageFor(model => model.ProductsId, "", new { @class = "text-danger" })
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(model => model.ClientId, htmlAttributes: new { @class = "control-label" })
-        @Html.TextBoxFor(model => model.ClientId, new { @class = "form-control" })
-        @Html.ValidationMessageFor(model => model.ClientId, "", new { @class = "text-danger" })
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(model => model.DateCreation, htmlAttributes: new { @class = "control-label" })
-        @Html.TextBoxFor(model => model.DateCreation, new { @class = "form-control" })
-        @Html.ValidationMessageFor(model => model.DateCreation, "", new { @class = "text-danger" })
-    </div>
-
-    
-
-    <div class="form-group">
-        <input type="submit" value="Create" class="btn btn-primary" />
-    </div>
+@section scripts {
+            <script>
+        
+        </script>
 }
-
-@if (Model != null)
-{
-    <h4>Created Order:</h4>
-    <div>
-        <h5>Order ID: @Model.ProductsId</h5>
-       
-    </div>
-}
-
 
 
 
 
 
 *@
-
-
-
-
-
-
-
-
 
 
 

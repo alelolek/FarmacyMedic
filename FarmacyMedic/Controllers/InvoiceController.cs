@@ -50,40 +50,48 @@ namespace FarmacyMedic.Controllers
             return View(invoiceDto);
         }
 
-        public async Task<IActionResult> Create()
+
+        public async Task<IActionResult> CreateInvoice()
         {
-            //var orders = await _context.Orders
-            //    .Include(o => o.OrderProduct)
-            //    .ThenInclude(op => op.Product)
-            //    .Include(o => o.Client)
-            //    .ToListAsync();
+            var orders = await _context.Orders.Include(o => o.Client).ToListAsync();
+            var ordersSelectList = orders.Select(o => new SelectListItem { Value = o.Id.ToString(), Text = $"{o.Client.Name} - Order ID: {o.Id}" }).ToList();
+            ViewBag.Orders = ordersSelectList;
 
-            //ViewBag.Orders = new SelectList(orders, "Id", "Id");
-
-            //var currentOrder = orders.FirstOrDefault();
-
-            //decimal totalAmount = currentOrder?.OrderProduct.Sum(op => op.Product.Price ) ?? 0;
-            ////decimal totalAmount = currentOrder?.OrderProduct.Sum(op => op.Product.Price * op.Quantity) ?? 0;
-
-
-            //var invoiceCreacionDto = new InvoiceCreacionDto
-            //{
-            //    OrderId = currentOrder?.Id ?? 0,
-            //    Date = DateTime.Now,
-            //    TotalAmount = totalAmount,
-            //    State = InvoiceState.Done
-            //};
+            // También cargamos los detalles de la orden para calcular el TotalAmount
+            ViewBag.OrderDetails = orders.FirstOrDefault()?.ProductDetail;
 
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(InvoiceCreacionDto invoiceCreacionDto)
+        public async Task<IActionResult> CreateInvoice(InvoiceCreacionDto invoiceCreacionDto)
         {
-			
-			return View(invoiceCreacionDto);
-		}
+            if (!ModelState.IsValid)
+            {
+                // Si el modelo no es válido, regresar a la vista para corregir errores
+                var orders = await _context.Orders.Include(o => o.Client).ToListAsync();
+                var ordersSelectList = orders.Select(o => new SelectListItem { Value = o.Id.ToString(), Text = $"{o.Client.Name} - Order ID: {o.Id}" }).ToList();
+                ViewBag.Orders = ordersSelectList;
 
+                // También cargamos los detalles de la orden para recalcular el TotalAmount
+                ViewBag.OrderDetails = orders.FirstOrDefault()?.ProductDetail;
+
+                return View(invoiceCreacionDto);
+            }
+
+            // Calculamos el TotalAmount como la suma de los productos multiplicado por su cantidad
+            var order = await _context.Orders.Include(o => o.ProductDetail).FirstOrDefaultAsync(o => o.Id == invoiceCreacionDto.OrderId);
+            var totalAmount = order.ProductDetail.Sum(pd => pd.Quantity * pd.Product.Price);
+            invoiceCreacionDto.TotalAmount = totalAmount;
+
+            
+            var invoice = mapper.Map<Invoice>(invoiceCreacionDto);
+            _context.Add(invoice);
+            await _context.SaveChangesAsync();
+
+            // Redireccionar a la página de confirmación o a otra página relevante
+            return RedirectToAction("InvoiceCreated");
+        }
 
 
         public async Task<IActionResult> Edit(int? id)

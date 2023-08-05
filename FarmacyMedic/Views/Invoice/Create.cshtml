@@ -1,46 +1,43 @@
 ﻿@model FarmacyMedic.Models.DTO.InvoiceCreacionDto
 
-@using (Html.BeginForm())
-{
-    <div>
-        <label for="OrderId">Order:</label>
-        @Html.DropDownListFor(model => model.OrderId, (SelectList)ViewBag.Orders, "Select an Order", new { @class = "form-control", id = "orderDropdown" })
-    </div>
 
-    <div>
-        <label for="Date">Date:</label>
-        @Html.TextBoxFor(model => model.Date, new { @class = "form-control", type = "date" })
-    </div>
+<h2>Create Invoice</h2>
 
-    <div>
-        <label for="TotalAmount">Total Amount:</label>
-        @Html.TextBoxFor(model => model.TotalAmount, new { @class = "form-control", @readonly = "readonly", id = "totalAmount" })
-    </div>
+<div>
+    @Html.LabelFor(model => model.OrderId)
+    @Html.DropDownListFor(model => model.OrderId, (List<SelectListItem>)ViewBag.Orders, "Select Order")
+</div>
+<div>
+    @Html.LabelFor(model => model.Date)
+    @Html.EditorFor(model => model.Date)
+</div>
+@*<div>
+    @Html.LabelFor(model => model.State)
+    <select asp-for="State" asp-items="Html.GetEnumSelectList<InvoiceState>()">
+        <option value="">Select State</option>
+    </select>
+</div>*@
+<div>
+    <h3>Order Details</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var productDetail in ViewBag.OrderDetails)
+            {
+                <tr>
+                    <td>@productDetail.Product.Name</td>
+                    <td>@productDetail.Quantity</td>
+                    <td>@productDetail.Product.Price</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
-    <div>
-        <label for="State">State:</label>
-        <select asp-for="State" class="form-control">
-            <option value="Initial">Initial</option>
-            <option value="InProgress">In Progress</option>
-            <option value="Completed">Completed</option>
-            <option value="Cancelled">Cancelled</option>
-        </select>
-    </div>
-    <button type="submit">Create Invoice</button>
-}
-
-
-<script>
-    document.getElementById("orderDropdown").addEventListener("change", function () {
-        var selectedOrder = this.value;
-        var orders = @Html.Raw(Json.Serialize(ViewBag.Orders));
-        var selectedOrderData = orders.find(o => o.value === selectedOrder);
-
-        var totalAmount = selectedOrderData.orderProduct.reduce((total, op) => total + (op.product.price ), 0);
-        //var totalAmount = selectedOrderData.orderProduct.reduce((total, op) => total + (op.product.price * op.quantity), 0);
-
-        document.getElementById("totalAmount").value = totalAmount;
-    });
-
-    document.getElementById("orderDropdown").dispatchEvent(new Event("change"));
-</script>
+<input type="submit" value="Create Invoice" />

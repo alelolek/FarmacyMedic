@@ -1,43 +1,31 @@
-﻿@*@model FarmacyMedic.Models.DTO.OrderDto
+﻿@model FarmacyMedic.Models.DTO.OrderDto
 
-@{
-    ViewData["Title"] = "Order Details";
-}
+<h2>Order Details</h2>
 
-<h1>Order Details</h1>
+<p><strong>Order ID:</strong> @Model.Id</p>
+<p><strong>Date:</strong> @Model.DateCreation</p>
+<p><strong>Client:</strong> @Model.Client.Name</p>
 
-@if (Model == null)
-{
-    <p>Order not found.</p>
-}
-else
-{
-    <div>
-      
-        <h2>Order ID: @Model.Id</h2>
-        <p>Order Date: @Model.DateCreation.ToShortDateString()</p>
-        <p>Customer Name: @Model.ClientId</p>
+<h3>Products</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Product Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var productDetail in Model.ProductDetail)
+        {
+            <tr>
+                <td>@productDetail.Product.Name</td>
+                <td>@productDetail.Quantity</td>
+                <td>@productDetail.Product.Price</td>
+            </tr>
+        }
+    </tbody>
+</table>
 
-        <h3>Ordered Products:</h3>
-        <ul>
-            @foreach (var orderProduct in Model.ProductDetail)
-            {
-                <li>@orderProduct.Product.Name - Quantity: @orderProduct.Quantity</li>
-            }
-        </ul>
-  
-    </div>
-}
+<a asp-action="Index">Back to List</a>
 
-<p>
-    <a asp-action="Index">Back to Orders List</a>
-</p>
-
-
-
-
-
-
-
-
-*@

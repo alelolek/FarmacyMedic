@@ -15,6 +15,11 @@ namespace FarmacyMedic.Models.Mapping
             CreateMap<Order, ClientDto>();
 
             CreateMap<ProductDetailCreationDto, ProductDetail>();
+
+            CreateMap<ProductDetail, ProductDetailDto>();
+
+            CreateMap<Order, OrderDto>()
+            .ForMember(dest => dest.ProductDetail, opt => opt.MapFrom(src => src.ProductDetail));
         }
     }
 }
