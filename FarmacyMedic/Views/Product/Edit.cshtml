@@ -1,11 +1,11 @@
 ﻿@model FarmacyMedic.Models.DTO.ProductDto
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Product";
 }
-
-<h1>Edit</h1>
-
+<br />
+<h1 >Edit Product</h1>
+<br />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
@@ -31,6 +31,7 @@
                 <input asp-for="Price" class="form-control" />
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
+            <br />
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>

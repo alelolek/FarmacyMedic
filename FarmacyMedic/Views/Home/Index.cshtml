@@ -1,1 +1,130 @@
-﻿<h1>Hola Mundo</h1>
+﻿@{
+	ViewData["Title"] = "Home";
+}
+<br />
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    @*<title>Estadísticas</title>*@
+    <style>
+        .flex-container {
+            display: flex;
+            justify-content: space-between; 
+            align-items: flex-start; 
+        }
+        table {
+            border-collapse: collapse;
+            width: 50%;
+            margin: 20px;
+            float: left;
+        }
+
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        .grafico-container {
+            width: 350px;
+            height: 250px;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="col-md-12 text-center">HOME</h1>
+    <h2 class ="col-md-12 text-center">Statistics</h2>
+
+    <br />
+    <div style="overflow: hidden;">
+        <div class="flex-container">
+            <table>
+                <caption>Best Selling Products (Last Month)</caption>
+                <tr>
+                    <th>Posición</th>
+                    <th>Producto</th>
+                    <th>Cantidad Vendida</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Medicamento X</td>
+                    <td>120 units</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Cuidado de la Piel Y</td>
+                    <td>90 units</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Vitaminas Z</td>
+                    <td>80 units</td>
+                </tr>
+            </table>
+            <div class="grafico-container">
+                <canvas id="graficoVentas" width="270" height="150"></canvas>
+            </div>
+        </div>
+        
+        <div>
+            <table>
+                <caption>Clients More Buyers (Last Month)</caption>
+                <tr>
+                    <th>Posición</th>
+                    <th>Cliente</th>
+                    <th>Total Comprado</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Juan Pérez</td>
+                    <td>S/ 800</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>María Rodríguez</td>
+                    <td>S/ 650</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Carlos Gómez</td>
+                    <td>S/ 550</td>
+                </tr>
+            </table>
+            <div class="grafico-container">
+                <canvas id="graficoCliente" width="270" height="150"></canvas>
+            </div>
+        </div>
+       
+    </div>
+</body>
+</html>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+@section scripts{
+    <script>
+        var ctx = document.getElementById('graficoVentas').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Cuidado de la Piel Y', '	Medicamento X', 'Vitaminas Z'],
+                datasets: [{
+                    label: 'Productos',
+                    data: [ 90, 120, 80], 
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)', 
+                    borderColor: 'rgba(75, 192, 192, 1)', 
+                    borderWidth: 1 
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true 
+                    }
+                }
+            }
+        });
+    </script>
+ }

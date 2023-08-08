@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FarmacyMedic.Migrations;
 using FarmacyMedic.Models;
 using FarmacyMedic.Models.DAO.Entities;
 using FarmacyMedic.Models.DTO;
@@ -6,6 +7,7 @@ using FarmacyMedic.Models.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Rotativa.AspNetCore;
 
 namespace FarmacyMedic.Controllers
 {
@@ -40,61 +42,94 @@ namespace FarmacyMedic.Controllers
             {
                 return NotFound();
             }
-            var invoice = await _context.Invoices
-                .FirstOrDefaultAsync(i=>i.Id == id);
-            var invoiceDto = mapper.Map<InvoiceDto>(invoice);
-            if(invoiceDto == null)
-            {
-                return NotFound();
-            }
-            return View(invoiceDto);
+
+            var invoice = _context.Invoices
+                      .Include(i => i.Order)
+                          .ThenInclude(o => o.ProductDetail)
+                              .ThenInclude(pd => pd.Product)
+                      .Include(i => i.Order)
+                          .ThenInclude(o => o.Client)
+                      .FirstOrDefault(f => f.Id == id);
+
+            //var invoiceDto = mapper.Map<InvoiceDto>(invoice);
+            //if(invoiceDto == null)
+            //{
+            //    return NotFound();
+            //}
+            return View(invoice);
         }
 
 
-        public async Task<IActionResult> CreateInvoice()
+        public async Task<IActionResult> Create()
         {
             var orders = await _context.Orders.Include(o => o.Client).ToListAsync();
             var ordersSelectList = orders.Select(o => new SelectListItem { Value = o.Id.ToString(), Text = $"{o.Client.Name} - Order ID: {o.Id}" }).ToList();
             ViewBag.Orders = ordersSelectList;
 
-            // También cargamos los detalles de la orden para calcular el TotalAmount
             ViewBag.OrderDetails = orders.FirstOrDefault()?.ProductDetail;
 
             return View();
         }
 
+        public async Task<IActionResult> GetOrderDetails(int orderId)
+        {
+            var order = await _context.Orders
+               .Include(o => o.ProductDetail)
+                   .ThenInclude(pd => pd.Product) 
+               .FirstOrDefaultAsync(o => o.Id == orderId);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            return PartialView("_OrderDetailsPartial", order);
+        }
+
         [HttpPost]
-        public async Task<IActionResult> CreateInvoice(InvoiceCreacionDto invoiceCreacionDto)
+        public async Task<IActionResult> Create(InvoiceCreacionDto invoiceCreacionDto)
         {
             if (!ModelState.IsValid)
             {
-                // Si el modelo no es válido, regresar a la vista para corregir errores
                 var orders = await _context.Orders.Include(o => o.Client).ToListAsync();
                 var ordersSelectList = orders.Select(o => new SelectListItem { Value = o.Id.ToString(), Text = $"{o.Client.Name} - Order ID: {o.Id}" }).ToList();
                 ViewBag.Orders = ordersSelectList;
 
-                // También cargamos los detalles de la orden para recalcular el TotalAmount
                 ViewBag.OrderDetails = orders.FirstOrDefault()?.ProductDetail;
 
                 return View(invoiceCreacionDto);
             }
 
-            // Calculamos el TotalAmount como la suma de los productos multiplicado por su cantidad
-            var order = await _context.Orders.Include(o => o.ProductDetail).FirstOrDefaultAsync(o => o.Id == invoiceCreacionDto.OrderId);
-            var totalAmount = order.ProductDetail.Sum(pd => pd.Quantity * pd.Product.Price);
-            invoiceCreacionDto.TotalAmount = totalAmount;
-
-            
             var invoice = mapper.Map<Invoice>(invoiceCreacionDto);
             _context.Add(invoice);
             await _context.SaveChangesAsync();
 
-            // Redireccionar a la página de confirmación o a otra página relevante
-            return RedirectToAction("InvoiceCreated");
+           
+            return RedirectToAction("Index");
         }
 
 
-        public async Task<IActionResult> Edit(int? id)
+		public IActionResult ImprimirVenta(int id)
+		{
+			var modelo = _context.Invoices
+	                 .Include(i => i.Order)
+		                 .ThenInclude(o => o.ProductDetail)
+			                 .ThenInclude(pd => pd.Product)
+	                 .Include(i => i.Order)
+		                 .ThenInclude(o => o.Client)
+	                 .FirstOrDefault(f => f.Id == id);
+
+			return new ViewAsPdf("ImprimirVenta", modelo)
+            {
+                FileName = $"Venta {modelo.Id}.pdf",
+                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
+				PageSize = Rotativa.AspNetCore.Options.Size.A4
+			};
+		}
+
+		
+
+		public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Invoices == null)
             {

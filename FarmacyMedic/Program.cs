@@ -11,6 +11,8 @@ var app = builder.Build();
 
 startup.Configure(app, app.Environment);
 
+IWebHostEnvironment env = app.Environment;
+Rotativa.AspNetCore.RotativaConfiguration.Setup(env.WebRootPath, "../Rotativa/Windows");
 
 app.Run();
 

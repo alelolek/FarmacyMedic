@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Folder Include="Models\DTO\Standar\" />
+    <Folder Include="wwwroot\imagenes\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,6 +19,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.15" />
+    <PackageReference Include="Rotativa.AspNetCore" Version="1.2.0" />
   </ItemGroup>
 
 </Project>

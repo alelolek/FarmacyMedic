@@ -1,11 +1,14 @@
 ﻿@using FarmacyMedic.Models.DTO;
 @model IEnumerable<FarmacyMedic.Models.DTO.ProductDto>
 
-
-
-<h1>Productos</h1>
+@{
+	ViewData["Title"] = "Product";
+}
+	<br />
+<h1>Products</h1>
+<br />
 <p>
-	<a asp-action="Create" class="btn btn-danger" >Delete</a>
+	<a asp-action="Create" class="btn btn-success" >Create Product</a>
 </p>
 
 <table class="table">
@@ -30,16 +33,16 @@
 		@foreach (var product in Model)
 		{
 			<tr>
-				<th>
+				<th style=" font-weight: normal;">
 					@Html.DisplayFor(m=>product.Name)
 				</th>
-				<th>
+				<th style=" font-weight: normal;">
 					@Html.DisplayFor(m=>product.Description)
 				</th>
-				<th>
+				<th style=" font-weight: normal;">
 					@Html.DisplayFor(m=>product.Stock)
 				</th>
-				<th>
+				<th style=" font-weight: normal;">
 					@Html.DisplayFor(m=>product.Price)
 				</th>
 				<td>

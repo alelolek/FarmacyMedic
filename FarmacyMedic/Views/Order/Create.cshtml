@@ -1,124 +1,93 @@
 ﻿@model FarmacyMedic.Models.DTO.OrderCreationDto
+@{
+    ViewData["Title"] = "Create Order";
+}
 
-<h2>Create Order</h2>
-
+<br />
+<h2 class="col-md-12 text-center">Create Order</h2>
+<br />
 @using (Html.BeginForm("Create", "Order", FormMethod.Post))
 {
-    <div>
-        @Html.LabelFor(model => model.DateCreation)
-        @Html.EditorFor(model => model.DateCreation)
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group font-weight-bold ">
+                    @Html.LabelFor(model => model.DateCreation, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.DateCreation, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ClientId, htmlAttributes: new { @class = "control-label" })
+                    @Html.DropDownListFor(model => model.ClientId, (List<SelectListItem>)ViewBag.Clients, "Select Client", new { @class = "form-control custom-select" })
+                </div>
+            </div>
+        </div>
     </div>
-    <div>
-        @Html.LabelFor(model => model.ClientId)
-        @Html.DropDownListFor(model => model.ClientId, (List<SelectListItem>)ViewBag.Clients, "Select Client")
-    </div>
+    <br />
+
+  
 
     <div>
         <h3>Products</h3>
-        @for (int i = 0; i < ViewBag.Products.Count; i++)
-        {
-            <div>
-                @Html.LabelFor(model => model.Products[i].ProductId)
-                @Html.DropDownListFor(model => model.Products[i].ProductId, (List<SelectListItem>)ViewBag.Products, "Select Product")
+        <div id="productList">
+            @for (int i = 0; i < 1; i++)
+            {
+                <div class="product-item">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Products[i].ProductId, htmlAttributes: new { @class = "control-label col-md-3" })
+                        <div class="col-md-9">
+                            @Html.DropDownListFor(model => model.Products[i].ProductId, (List<SelectListItem>)ViewBag.Products, "Select Product", new { @class = "form-control" })
+                        </div>
+                    </div>
 
-                @Html.LabelFor(model => model.Products[i].Quantity)
-                @Html.EditorFor(model => model.Products[i].Quantity)
-            </div>
-        }
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Products[i].Quantity, htmlAttributes: new { @class = "control-label col-md-3" })
+                        <div class="col-md-9">
+                            @Html.EditorFor(model => model.Products[i].Quantity, new { htmlAttributes = new { @class = "form-control", type = "number", min = 1 } })
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <button id="addProductButton" class="btn btn-secondary" type="button">Add More Products</button>
     </div>
-
-    <input type="submit" value="Create Order" />
+  <div>
+        <button id="createOrderButton" class="btn btn-success" type="submit">Create</button>
+  </div>
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-@*@model FarmacyMedic.Models.DTO.OrderCreationDto
-
-<h2>Crear Nueva Orden</h2>
-
-<form id="orderForm" method="post" action="@Url.Action("Create", "Order")">
-    <div class="form-group">
-        <label for="DateCreation">Fecha de Creación:</label>
-        @Html.TextBoxFor(m => m.DateCreation, new { type = "date", @class = "form-control" })
-    </div>
-    <div class="form-group">
-        <label for="ClientId">Cliente:</label>
-        @Html.DropDownListFor(m => m.ClientId, (IEnumerable<SelectListItem>)ViewBag.Clients, new { @class = "form-control" })
-    </div>
-    <button type="submit" id="crearOrdenButton" class="btn btn-primary mt-3">Create Order</button>
-   
-</form>
-
-
-<partial name="Products"  />
-
-
-<button type="submit" id="crearOrdenButton" class="btn btn-primary mt-3">Create Order</button>
-
-
-
-
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRPifzW3RAwTbkkW8nx9vOtl1TkpTd7Fzj2HXM1Bt" crossorigin="anonymous"></script>
 
 @section scripts {
-            <script>
-        
-        </script>
+<script>
+    $(document).ready(function () {
+        var productCounter = 1; // Contador para llevar un seguimiento de cuántos campos de producto se han agregado
+
+        $('#addProductButton').click(function () {
+            var productHtml = `
+                <div class="product-item">
+                    <label for="Products[${productCounter}].ProductId">Product</label>
+                    <select name="Products[${productCounter}].ProductId" class="form-control">
+                        <option value="">Select Product</option>
+    @foreach (var product in ViewBag.Products)
+    {
+                                <option value="@product.Value">@product.Text</option>
+    }
+                    </select>
+
+                    <label for="Products[${productCounter}].Quantity">Quantity</label>
+                    <input type="number" name="Products[${productCounter}].Quantity" class="form-control" min="1">
+                </div>
+            `;
+
+            $('#productList').append(productHtml);
+            productCounter++;
+        });
+    });
+</script>
+
 }
 
 
-
-
-
-*@
-
-
-
-
-
-
-
-
-
-
-@*@model FarmacyMedic.Models.DTO.OrderCreationDto
-
-<h1>Create New Order</h1>
-
-<h2>Nueva Orden</h2>
-<form method="post" asp-action="Create">
-    <div class="form-group">
-        <label for="DateCreation">Fecha de Creación:</label>
-        <input type="date" class="form-control" id="DateCreation" name="DateCreation" asp-for="DateCreation" required>
-    </div>
-    <div class="form-group">
-        <label for="ClientId">ID del Cliente:</label>
-        <input type="number" class="form-control" id="ClientId" name="ClientId" asp-for="ClientId" required>
-    </div>
-    <button type="submit" value="Create" class="btn btn-primary">Crear Orden</button>
-</form>
-<p>
-    @Html.ActionLink("Back to List", "Index")
-</p>
-*@

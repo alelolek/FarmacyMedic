@@ -1,5 +1,74 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model FarmacyMedic.Models.DAO.Entities.Invoice
+
 @{
+	ViewData["Title"] = "Invoice";
 }
+
+
+<div class="container mt-5">
+    <h1 class="mb-4">Detalle de Factura</h1>
+    <div class="row">
+        <div class="col-md-6">
+            <table class="table">
+                <tr>
+                    <th>ID de Factura</th>
+                    <td>@Model.Id</td>
+                </tr>
+                <tr>
+                    <th>Cliente Nombre</th>
+                    <td>@Model.Order.Client.Name</td>
+                </tr>
+                <tr>
+                    <th>Cliente DNI</th>
+                    <td>@Model.Order.Client.Code</td>
+                </tr>
+                <tr>
+                    <th>Fecha</th>
+                    <td>@Model.Date.ToString("dd/MM/yyyy")</td>
+                </tr>
+                <tr>
+                    <th>Estado</th>
+                    <td>@Model.State</td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Precio Unitario</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Order.ProductDetail)
+                    {
+                        <tr>
+                            <td>@item.Order.Client.Name</td>
+                            <td>@item.Quantity</td>
+                            <td>@item.Product.Price.ToString("C2")</td>
+                            @{
+                                string precio = (item.Product.Price * item.Quantity).ToString("C2");
+                            }
+                            <td>@precio</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 offset-md-6 text-right">
+            @{
+                decimal total = Model.TotalAmount ;
+                string forigv = total.ToString("F2");
+            }
+            <h4>Total: @Model.TotalAmount.ToString("C2")</h4>
+        </div>
+    </div>
+</div>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

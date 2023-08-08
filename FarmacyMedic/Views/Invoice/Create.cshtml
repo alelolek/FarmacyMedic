@@ -1,43 +1,75 @@
 ﻿@model FarmacyMedic.Models.DTO.InvoiceCreacionDto
-
+@using FarmacyMedic.Models.Enums
 
 <h2>Create Invoice</h2>
 
-<div>
-    @Html.LabelFor(model => model.OrderId)
-    @Html.DropDownListFor(model => model.OrderId, (List<SelectListItem>)ViewBag.Orders, "Select Order")
-</div>
-<div>
-    @Html.LabelFor(model => model.Date)
-    @Html.EditorFor(model => model.Date)
-</div>
-@*<div>
-    @Html.LabelFor(model => model.State)
-    <select asp-for="State" asp-items="Html.GetEnumSelectList<InvoiceState>()">
-        <option value="">Select State</option>
-    </select>
-</div>*@
-<div>
-    <h3>Order Details</h3>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Product Name</th>
-                <th>Quantity</th>
-                <th>Price</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var productDetail in ViewBag.OrderDetails)
-            {
-                <tr>
-                    <td>@productDetail.Product.Name</td>
-                    <td>@productDetail.Quantity</td>
-                    <td>@productDetail.Product.Price</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+@using (Html.BeginForm("Create", "Invoice", FormMethod.Post))
+{
+    <div>
+        @Html.LabelFor(model => model.OrderId)
+        @Html.DropDownListFor(model => model.OrderId, (List<SelectListItem>)ViewBag.Orders, "Select Order", new { @class = "form-control", id = "orderIdDropdown" })
+    </div>
+    <div id="orderDetailsContainer">
+        <div id="orderDetails">
 
-<input type="submit" value="Create Invoice" />
+        </div>
+    </div>
+    <br />
+    <br />
+
+    <div class="col-md-6">
+        @Html.LabelFor(model => model.State)
+        @Html.DropDownListFor(model => model.State, Enum.GetValues(typeof(InvoiceState)).Cast<InvoiceState>().Select(s => new SelectListItem { Value = s.ToString(), Text = s.ToString() }), "Select State", new { @class = "form-control" })
+    </div>
+    <br />
+    <br />
+
+    <div class="col-md-6">
+        @Html.LabelFor(model => model.Date)
+        @Html.EditorFor(model => model.Date, new { @class = "form-control", @Value = "", @type = "datetime-local" })
+    </div>
+ 
+    <br />
+    <br />
+
+    <input type="submit" value="Create Invoice" class="btn btn-primary" />
+}
+
+<input type="hidden" id="currentDateTime" value="" />
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Obtener la fecha y hora actual en el formato requerido por el campo de fecha
+            var currentDateTime = new Date().toISOString().substring(0, 16);
+
+            // Establecer el valor del campo oculto y del campo de fecha
+            $('#currentDateTime').val(currentDateTime);
+            $('#Date').val(currentDateTime);
+
+            $('#orderIdDropdown').change(function () {
+                var selectedOrderId = $(this).val();
+
+                if (selectedOrderId !== '') {
+                    $.ajax({
+                        url: '/Invoice/GetOrderDetails',
+                        type: 'GET',
+                        data: { orderId: selectedOrderId },
+                        success: function (data) {
+                            $('#orderDetails').html(data);
+                        },
+                        error: function () {
+                            console.log('Error retrieving order details');
+                        }
+                    });
+                } else {
+                    $('#orderDetails').empty();
+                }
+            });
+        });
+    </script>
+}

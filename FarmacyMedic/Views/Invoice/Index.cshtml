@@ -1,10 +1,12 @@
 ﻿@using FarmacyMedic.Models.DTO;
 @model IEnumerable<FarmacyMedic.Models.DTO.InvoiceDto>
-
+@{
+	ViewData["Title"] = "Invoice";
+}
 
 <h1>Invoice</h1>
 <p>
-	<a asp-action="Create" class="btn ">Create</a>
+	<a asp-action="Create" class="btn  btn-success">Create</a>
 </p>
 
 <table class="table">
@@ -29,25 +31,39 @@
 		@foreach (var product in Model)
 		{
 			<tr>
-				<th>
+				<th style=" font-weight: normal;">
 					@Html.DisplayFor(m=>product.Date)
 				</th>
-				<th>
+				<th style=" font-weight: normal;">
 					@Html.DisplayFor(m=>product.State)
 				</th>
-				<th>
+				<th style=" font-weight: normal;">
 					@Html.DisplayFor(m=>product.OrderId)
 				</th>
-				<th>
+				<th style=" font-weight: normal;">
 					@Html.DisplayFor(m=>product.TotalAmount)
-				</th>
+				</th >
 
 				<td>
 					<a asp-action="Edit" class="btn btn-warning" asp-route-id="@product.Id">Edit</a> |
 					<a asp-action="Details" class="btn btn-primary" asp-route-id="@product.Id">Details</a> |
-					<a asp-action="Delete" class="btn btn-danger" asp-route-id="@product.Id">Delete</a>
+					<a asp-action="Delete" class="btn btn-danger" asp-route-id="@product.Id">Delete</a> |
+					<a asp-controller="Invoice" class="btn btn-info" asp-action="ImprimirVenta" asp-route-id="@product.Id">Imprimir</a>
+
 				</td>
 			</tr>
 		}
 	</tbody>
 </table>
+
+@section Scripts {
+	<script>
+		$(document).ready(function () {
+			$('.print-invoice-button').click(function () {
+				var invoiceId = $(this).data('invoice-id');
+				var url = '/Invoice/PrintInvoice/' + invoiceId;
+				window.open(url, '_blank');
+			});
+		});
+	</script>
+}

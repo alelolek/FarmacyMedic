@@ -1,0 +1,37 @@
+﻿@model FarmacyMedic.Models.DAO.Entities.Order
+<br />
+<br />
+<h3>Order Details</h3>
+<br />
+
+<p>Order ID: @Model.Id</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in Model.ProductDetail)
+        {
+           <tr>
+                <td>@product.Quantity</td>
+               <td>@product.Product.Name</td>
+                <td>@product.Product.Price</td>
+            </tr>
+        }
+        <tr>
+            <td colspan="3" class="text-right">Total:</td>
+            <td>
+                @Model.ProductDetail.Sum(product => product.Quantity * product.Product.Price)
+            </td>
+        </tr>
+    </tbody>
+    @{
+        decimal totalAmount = Model.ProductDetail.Sum(product => product.Quantity * product.Product.Price);
+    }
+    <input type="hidden" id="TotalAmount" name="TotalAmount" value="@totalAmount" />
+</table>
