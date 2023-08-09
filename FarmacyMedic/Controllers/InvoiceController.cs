@@ -51,11 +51,7 @@ namespace FarmacyMedic.Controllers
                           .ThenInclude(o => o.Client)
                       .FirstOrDefault(f => f.Id == id);
 
-            //var invoiceDto = mapper.Map<InvoiceDto>(invoice);
-            //if(invoiceDto == null)
-            //{
-            //    return NotFound();
-            //}
+           
             return View(invoice);
         }
 
@@ -122,7 +118,7 @@ namespace FarmacyMedic.Controllers
 			return new ViewAsPdf("ImprimirVenta", modelo)
             {
                 FileName = $"Venta {modelo.Id}.pdf",
-                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
+                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape,//Portrait,
 				PageSize = Rotativa.AspNetCore.Options.Size.A4
 			};
 		}
@@ -153,7 +149,7 @@ namespace FarmacyMedic.Controllers
             {
                 try
                 {
-                    var invoice = mapper.Map<Product>(invoiceCreacionDto);
+                    var invoice = mapper.Map<Invoice>(invoiceCreacionDto);
                     invoice.Id = id;
                     _context.Update(invoice);
                     await _context.SaveChangesAsync();

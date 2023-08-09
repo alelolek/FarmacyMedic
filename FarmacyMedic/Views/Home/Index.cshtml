@@ -35,7 +35,6 @@
 </head>
 <body>
     <h1 class="col-md-12 text-center">HOME</h1>
-    <h2 class ="col-md-12 text-center">Statistics</h2>
 
     <br />
     <div style="overflow: hidden;">
@@ -49,17 +48,17 @@
                 </tr>
                 <tr>
                     <td>1</td>
-                    <td>Medicamento X</td>
+                    <td>Amoxiciline 500mg</td>
                     <td>120 units</td>
                 </tr>
                 <tr>
                     <td>2</td>
-                    <td>Cuidado de la Piel Y</td>
+                    <td>Niaciamine 10%</td>
                     <td>90 units</td>
                 </tr>
                 <tr>
                     <td>3</td>
-                    <td>Vitaminas Z</td>
+                    <td>Vitamine C</td>
                     <td>80 units</td>
                 </tr>
             </table>
@@ -68,7 +67,7 @@
             </div>
         </div>
         
-        <div>
+        <div class="flex-container">
             <table>
                 <caption>Clients More Buyers (Last Month)</caption>
                 <tr>
@@ -109,9 +108,9 @@
         var myChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Cuidado de la Piel Y', '	Medicamento X', 'Vitaminas Z'],
+                labels: ['Niaciamine 10%', 'Amoxiciline 500mg', 'Vitamine C'],
                 datasets: [{
-                    label: 'Productos',
+                    label: 'Products',
                     data: [ 90, 120, 80], 
                     backgroundColor: 'rgba(75, 192, 192, 0.2)', 
                     borderColor: 'rgba(75, 192, 192, 1)', 
@@ -122,6 +121,28 @@
                 scales: {
                     y: {
                         beginAtZero: true 
+                    }
+                }
+            }
+        });
+
+        var cty = document.getElementById('graficoCliente').getContext('2d');
+        var myChart2 = new Chart(cty, {
+            type: 'bar',
+            data: {
+                labels: ['Carlos Gómez', '	Juan Pérez', 'María Rodríguez'],
+                datasets: [{
+                    label: 'Clients',
+                    data: [550, 800, 650],
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
                     }
                 }
             }
