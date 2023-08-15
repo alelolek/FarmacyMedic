@@ -1,6 +1,6 @@
 # FarmacyMedic - Aplicación Web para Gestión de Inventario 
 
-![FarmacyMedic](https://github.com/alelolek/FarmacyMedic/blob/main/Arquitecture)
+![FarmacyMedic](https://github.com/alelolek/FarmacyMedic/blob/main/DiagramaDeArquitectura.png)
 
 ## Descripción
 
@@ -31,6 +31,9 @@ La arquitectura de FarmacyMedic sigue el patrón MVC (Modelo-Vista-Controlador),
 A continuación se muestra el diagrama que representa la estructura de la base de datos utilizada en FarmacyMedic:
 
 ![Diagrama Base de Datos](https://github.com/alelolek/FarmacyMedic/blob/main/DiagramaBD.PNG)
+
+## Demostración Proyecto FarmacyMedic
+[Aplicación Web para Gestión de Inventario - FarmacyMedic](https://youtu.be/JbuMn8O5rZ4)
 
 ## Instalación
 
